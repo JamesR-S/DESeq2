@@ -1962,10 +1962,10 @@ nbinomLRT <- function(object, full=design(object), reduced,
     }
     idMat <- diag(ncol(fit_full$Beta))
     pred  <- glmGamPoi::predict(fit_full, se.fit=TRUE, newdata=idMat)
+    seMat <- pred$se.fit / log(2)
+    colnames(seMat)   <- paste0("SE_", colnames(fit_full$Beta))
     fullModel <- list(betaMatrix = fit_full$Beta / log(2), # Make sure Beta are on log2-scale
-                      betaSE = pred$se.fit / log(2),
-                                     dimnames = list(rownames(fit_full$Beta),
-                                                     paste0("SE_",colnames(fit_full$Beta)))),
+                      betaSE = seMat,
                       mu = fit_full$Mu, betaConv = rep(TRUE, nrow(objectNZ)),
                       betaIter = rep(NA, nrow(objectNZ)))
     reducedModel <- list(betaConv = rep(TRUE, nrow(objectNZ)))
