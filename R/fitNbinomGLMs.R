@@ -92,6 +92,7 @@ fitNbinomGLMs <- function(object, modelMatrix=NULL, modelFormula, alpha_hat, lam
                 betaSE = pred$se.fit / log(2), mu = gp_res$Mu, betaIter = rep(NA,nrow(object)),
                 modelMatrix=modelMatrix, 
                 nterms=ncol(modelMatrix), hat_diagonals = NULL)
+    dimnames(res$betaSE) <- dimnames(gp_res$Beta)
     return(res)
   }
   
