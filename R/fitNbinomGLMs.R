@@ -84,10 +84,12 @@ fitNbinomGLMs <- function(object, modelMatrix=NULL, modelFormula, alpha_hat, lam
     gp_res <- glmGamPoi::glm_gp(counts(object), design = modelMatrix,
                                 size_factors = FALSE, offset = log(normalizationFactors),
                                 overdispersion = alpha_hat, verbose = FALSE)
+    identity_design_matrix <-  diag(nrow = ncol(gp_res$Beta))
+    pred <- glmGamPoi::predict(gp_res, se.fit = TRUE, newdata = identity_design_matrix)
     logLikeMat <- dnbinom(counts(object), mu=gp_res$Mu, size=1/alpha_hat, log=TRUE)
     logLike <- MatrixGenerics::rowSums(logLikeMat)
     res <- list(logLike = logLike, betaConv =  rep(TRUE, nrow(object)), betaMatrix = gp_res$Beta / log(2),
-                betaSE = NULL, mu = gp_res$Mu, betaIter = rep(NA,nrow(object)),
+                betaSE = pred$se.fit[,1] / log(2), mu = gp_res$Mu, betaIter = rep(NA,nrow(object)),
                 modelMatrix=modelMatrix, 
                 nterms=ncol(modelMatrix), hat_diagonals = NULL)
     return(res)
