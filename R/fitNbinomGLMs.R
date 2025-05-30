@@ -89,7 +89,7 @@ fitNbinomGLMs <- function(object, modelMatrix=NULL, modelFormula, alpha_hat, lam
     logLikeMat <- dnbinom(counts(object), mu=gp_res$Mu, size=1/alpha_hat, log=TRUE)
     logLike <- MatrixGenerics::rowSums(logLikeMat)
     res <- list(logLike = logLike, betaConv =  rep(TRUE, nrow(object)), betaMatrix = gp_res$Beta / log(2),
-                betaSE = pred$se.fit[,1] / log(2), mu = gp_res$Mu, betaIter = rep(NA,nrow(object)),
+                betaSE = pred$se.fit / log(2), mu = gp_res$Mu, betaIter = rep(NA,nrow(object)),
                 modelMatrix=modelMatrix, 
                 nterms=ncol(modelMatrix), hat_diagonals = NULL)
     return(res)
