@@ -1960,9 +1960,10 @@ nbinomLRT <- function(object, full=design(object), reduced,
     } else {
       stats::model.matrix.default(reduced, data=as.data.frame(colData(objectNZ)))
     }
-    
+    idMat <- diag(ncol(fit_full$Beta))
+    pred  <- glmGamPoi::predict(fit_full, se.fit=TRUE, newdata=idMat)
     fullModel <- list(betaMatrix = fit_full$Beta / log(2), # Make sure Beta are on log2-scale
-                      betaSE = array(NA, dim(fit_full$Beta),
+                      betaSE = pred$se.fit / log(2),
                                      dimnames = list(rownames(fit_full$Beta),
                                                      paste0("SE_",colnames(fit_full$Beta)))),
                       mu = fit_full$Mu, betaConv = rep(TRUE, nrow(objectNZ)),
